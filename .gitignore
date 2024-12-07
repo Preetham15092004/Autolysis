@@ -19,3 +19,10 @@ manim-templates/
 preetham/
 relational/
 s-anand/
+# Ignore boundary files
+DISTRICT_BOUNDARY.*
+
+# Ignore directories
+Preetham IITM/
+Skillbanc_files/
+icfai/
