@@ -89,18 +89,24 @@ def visualize_numeric_distributions(data, column, filename):
     plt.close()
 
 def visualize_categorical_counts(data, column, filename):
+    """Generates a bar chart for the top 10 categories in a column."""
     sanitized_filename = sanitize_filename(filename)
-    plt.figure(figsize=(10, 6))
+    plt.figure(figsize=(12, 8))  # Increase figure size for readability
     sns.barplot(
-        x=data[column].value_counts().index[:10],
-        y=data[column].value_counts().values[:10],
-        palette="viridis",
+        x=data[column].value_counts().index[:10],  # Top 10 categories
+        y=data[column].value_counts().values[:10],  # Corresponding frequencies
+        palette="viridis"
     )
-    plt.xticks(rotation=45, ha="right")
+    plt.xticks(rotation=45, ha="right")  # Rotate labels for readability
     plt.title(f"Top 10 Categories in {column}")
     plt.xlabel(column)
     plt.ylabel("Frequency")
-    plt.savefig(sanitized_filename)
+    
+    # Automatically adjust layout to fit labels
+    plt.tight_layout()
+    
+    # Save the plot
+    plt.savefig(filename)
     plt.close()
 
 def create_visualizations(data, data_summary, output_dir):
