@@ -17,6 +17,11 @@ import seaborn as sns
 import requests
 from PIL import Image
 
+# Function to sanitize filenames
+def sanitize_filename(filename):
+    """Replaces spaces with underscores in filenames."""
+    return filename.replace(" ", "_")
+
 # Validate command-line arguments
 if len(sys.argv) != 2:
     print("Usage: uv run autolysis.py <dataset.csv>")
@@ -66,34 +71,36 @@ def perform_generic_analysis(data):
 
 # Generate visualizations
 def visualize_correlation_matrix(corr_matrix, filename):
+    sanitized_filename = sanitize_filename(filename)
     plt.figure(figsize=(10, 8))
     sns.heatmap(corr_matrix, annot=True, fmt=".2f", cmap="coolwarm", cbar=True, square=True)
     plt.title("Correlation Matrix Heatmap")
-    plt.savefig(filename)
+    plt.savefig(sanitized_filename)
     plt.close()
 
 def visualize_numeric_distributions(data, column, filename):
+    sanitized_filename = sanitize_filename(filename)
     plt.figure(figsize=(8, 6))
     sns.histplot(data[column].dropna(), kde=True, bins=30, color="blue")
     plt.title(f"Distribution of {column}")
     plt.xlabel(column)
     plt.ylabel("Frequency")
-    plt.savefig(filename)
+    plt.savefig(sanitized_filename)
     plt.close()
 
 def visualize_categorical_counts(data, column, filename):
+    sanitized_filename = sanitize_filename(filename)
     plt.figure(figsize=(10, 6))
     sns.barplot(
         x=data[column].value_counts().index[:10],
         y=data[column].value_counts().values[:10],
         palette="viridis",
-        hue=None  # Explicitly set hue to None
     )
-    plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
+    plt.xticks(rotation=45, ha="right")
     plt.title(f"Top 10 Categories in {column}")
     plt.xlabel(column)
     plt.ylabel("Frequency")
-    plt.savefig(filename)
+    plt.savefig(sanitized_filename)
     plt.close()
 
 def create_visualizations(data, data_summary, output_dir):
@@ -106,17 +113,17 @@ def create_visualizations(data, data_summary, output_dir):
         if not corr_matrix.empty:
             filename = os.path.join(output_dir, "correlation_matrix.png")
             visualize_correlation_matrix(corr_matrix, filename)
-            charts.append(filename)
+            charts.append(sanitize_filename(filename))
 
     for col in numeric_cols[:3]:
         filename = os.path.join(output_dir, f"{col}_distribution.png")
         visualize_numeric_distributions(data, col, filename)
-        charts.append(filename)
+        charts.append(sanitize_filename(filename))
 
     for col in categorical_cols[:3]:
         filename = os.path.join(output_dir, f"{col}_bar_chart.png")
         visualize_categorical_counts(data, col, filename)
-        charts.append(filename)
+        charts.append(sanitize_filename(filename))
 
     return charts
 
@@ -126,7 +133,7 @@ def resize_images(image_files, size=(512, 512)):
     for file in image_files:
         img = Image.open(file)
         img = img.resize(size)
-        resized_file = file.replace(".png", "_resized.png")
+        resized_file = sanitize_filename(file.replace(".png", "_resized.png"))
         img.save(resized_file)
         resized_files.append(resized_file)
     return resized_files
@@ -151,7 +158,6 @@ def query_llm(prompt):
     except requests.exceptions.RequestException as e:
         print(f"Error communicating with AI Proxy: {e}")
         return ""
-
 
 # Generate story
 def generate_story(data_summary, insights, resized_charts):
@@ -179,18 +185,12 @@ data_summary = perform_generic_analysis(data)
 charts = create_visualizations(data, data_summary, output_dir)
 resized_charts = resize_images(charts)
 insights = query_llm(f"Analyze this dataset summary: {data_summary}")
-# Generate story
 story = generate_story(data_summary, insights, resized_charts)
 
-# Check if the story (content) is empty
-if not story.strip():  # Check if content is empty or whitespace
+if not story.strip():
     print("Error: LLM returned empty content.")
     sys.exit(1)
 
-# Print the story for debugging
-print(story)  # Add this line to verify the generated story
-
-# Save the story as README.md
+print(story)
 save_readme(story, output_dir)
-
 print(f"Analysis complete. Outputs saved in {output_dir}.")
