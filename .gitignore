@@ -1,0 +1,21 @@
+.gitignore
+# Ignore personal files
+*.pdf
+*.docx
+*.txt
+*.jpg
+*.lnk
+*.csv
+*.py
+desktop.ini
+happiness_cleaned.csv
+
+# Ignore folders
+bhanu arcade/
+Skillbanc-App-main/
+Hyderabad-GitHub-Users/
+discourse-topics/
+manim-templates/
+preetham/
+relational/
+s-anand/
