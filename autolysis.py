@@ -32,9 +32,7 @@ if not os.path.isfile(dataset_file):
     print(f"File {dataset_file} not found.")
     sys.exit(1)
 
-import os
-import sys
-
+# Load the AI Proxy token
 try:
     ai_proxy_token = os.environ["AIPROXY_TOKEN"]
     print(f"AIPROXY_TOKEN detected: {ai_proxy_token[:10]}...")  # Only print part of the token for security
@@ -86,11 +84,11 @@ def visualize_numeric_distributions(data, column, filename):
 def visualize_categorical_counts(data, column, filename):
     plt.figure(figsize=(10, 6))
     sns.barplot(
-    x=data[column].value_counts().index[:10],
-    y=data[column].value_counts().values[:10],
-    palette="viridis",
-    hue=None  # Explicitly set hue to None
-)
+        x=data[column].value_counts().index[:10],
+        y=data[column].value_counts().values[:10],
+        palette="viridis",
+        hue=None  # Explicitly set hue to None
+    )
     plt.xticks(rotation=45, ha="right")  # Rotate x-axis labels
     plt.title(f"Top 10 Categories in {column}")
     plt.xlabel(column)
@@ -157,7 +155,7 @@ def query_llm(prompt):
 
 # Generate story
 def generate_story(data_summary, insights, resized_charts):
-    chart_refs = "\n".join([f"![Chart](./{chart})" for chart in resized_charts])
+    chart_refs = "\n".join([f"![Chart](./{os.path.basename(chart)})" for chart in resized_charts])
     prompt = f"""
 Write a Markdown report:
 - Data Summary: {data_summary}

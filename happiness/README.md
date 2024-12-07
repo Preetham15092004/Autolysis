@@ -1,63 +1,87 @@
-# Dataset Report: Life Satisfaction and Happiness Indicators
+# Data Analysis Report
 
 ## Data Summary
-The dataset comprises 2363 entries and 11 columns, capturing various factors influencing life satisfaction across different countries over time.
 
-### 1. **Dataset Structure**
-- **Shape**: The dataset contains **2363 rows** (observations) and **11 columns** (variables).
+- **Dataset Shape**: 
+    - The dataset consists of **2363** rows and **11** columns.
+  
+- **Missing Values**:
+    | Column                              | Missing Values |
+    |-------------------------------------|----------------|
+    | Country name                        | 0              |
+    | Year                                | 0              |
+    | Life Ladder                         | 0              |
+    | Log GDP per capita                 | 28             |
+    | Social support                      | 13             |
+    | Healthy life expectancy at birth    | 63             |
+    | Freedom to make life choices       | 36             |
+    | Generosity                          | 81             |
+    | Perceptions of corruption           | 125            |
+    | Positive affect                     | 24             |
+    | Negative affect                     | 16             |
 
-### 2. **Missing Values**
-There are several fields with missing values, which should be addressed in subsequent analyses:
-- **Log GDP per capita**: 28 missing values
-- **Social support**: 13 missing values
-- **Healthy life expectancy at birth**: 63 missing values
-- **Freedom to make life choices**: 36 missing values
-- **Generosity**: 81 missing values
-- **Perceptions of corruption**: 125 missing values
-- **Positive affect**: 24 missing values
-- **Negative affect**: 16 missing values
-- No missing values are present for **Country name**, **year**, and **Life Ladder**.
+- **Data Types**:
+    - **Country name**: `object`
+    - **Year**: `int64`
+    - **Life Ladder**: `float64`
+    - **Log GDP per capita**: `float64`
+    - **Social support**: `float64`
+    - **Healthy life expectancy at birth**: `float64`
+    - **Freedom to make life choices**: `float64`
+    - **Generosity**: `float64`
+    - **Perceptions of corruption**: `float64`
+    - **Positive affect**: `float64`
+    - **Negative affect**: `float64`
 
-### 3. **Data Types**
-- **Country name**: `object` (categorical)
-- **year**: `int64` (numerical)
-- Remaining columns: `float64` (numerical), indicating they contain continuous variables.
+- **Head of Data**: 
+    | Country name | Year | Life Ladder | Log GDP per capita | Social support | Healthy life expectancy at birth | Freedom to make life choices | Generosity | Perceptions of corruption | Positive affect | Negative affect |
+    |--------------|------|-------------|---------------------|----------------|----------------------------------|------------------------------|------------|--------------------------|-----------------|-----------------|
+    | Afghanistan  | 2008 | 3.724       | 7.35                | 0.451          | 50.5                             | 0.718                        | 0.164      | 0.882                    | 0.414           | 0.258           |
+    | Afghanistan  | 2009 | 4.402       | 7.509               | 0.552          | 50.8                             | 0.679                        | 0.187      | 0.85                     | 0.481           | 0.237           |
+    | Afghanistan  | 2010 | 4.758       | 7.614               | 0.539          | 51.1                             | 0.6                          | 0.118      | 0.707                    | 0.517           | 0.275           |
+    | Afghanistan  | 2011 | 3.832       | 7.581               | 0.521          | 51.4                             | 0.496                        | 0.16       | 0.731                    | 0.48            | 0.267           |
+    | Afghanistan  | 2012 | 3.783       | 7.661               | 0.521          | 51.7                             | 0.531                        | 0.234      | 0.776                    | 0.614           | 0.268           |
 
-### 4. **Sample of the Data**
-Here are the first five records from the dataset, showing data for Afghanistan over the years 2008-2012:
+- **Correlations**: 
+    The correlation coefficients indicate linear relationships between variables:
 
-| Country name | year | Life Ladder | Log GDP per capita | Social support | Healthy life expectancy at birth | Freedom to make life choices | Generosity | Perceptions of corruption | Positive affect | Negative affect |
-|--------------|------|-------------|---------------------|----------------|---------------------------------|------------------------------|------------|---------------------------|-----------------|-----------------|
-| Afghanistan  | 2008 | 3.724       | 7.350               | 0.451          | 50.5                            | 0.718                        | 0.164      | 0.882                     | 0.414           | 0.258           |
-| Afghanistan  | 2009 | 4.402       | 7.509               | 0.552          | 50.8                            | 0.679                        | 0.187      | 0.850                     | 0.481           | 0.237           |
-| Afghanistan  | 2010 | 4.758       | 7.614               | 0.539          | 51.1                            | 0.600                        | 0.118      | 0.707                     | 0.517           | 0.275           |
-| Afghanistan  | 2011 | 3.832       | 7.581               | 0.521          | 51.4                            | 0.496                        | 0.160      | 0.731                     | 0.480           | 0.267           |
-| Afghanistan  | 2012 | 3.783       | 7.661               | 0.521          | 51.7                            | 0.531                        | 0.234      | 0.776                     | 0.614           | 0.268           |
+    - **Life Ladder**:
+      - Strong positive correlations:
+          - **Log GDP per capita**: 0.78
+          - **Social support**: 0.72
+          - **Healthy life expectancy at birth**: 0.71
+      - Negative correlation:
+          - **Perceptions of corruption**: -0.43
+  
+    - **Log GDP per capita**:
+      - Strong positive correlation:
+          - **Healthy life expectancy at birth**: 0.82
 
-### 5. **Correlations**
-Correlation coefficients among different variables reveal interesting insights:
-- **Life Ladder** demonstrates strong positive correlations with:
-  - **Log GDP per capita** (0.784)
-  - **Social support** (0.723)
-  - **Healthy life expectancy at birth** (0.715)
-  - **Freedom to make life choices** (0.538)
-  - **Positive affect** (0.515)
-- Notable negative correlations exist for **Life Ladder** with:
-  - **Perceptions of corruption** (-0.430)
-  - **Negative affect** (-0.352)
+### Insights
 
-Additionally:
-- **Log GDP per capita** shows a strong correlation with **Healthy life expectancy at birth** (0.819).
-- Correlations with **Generosity** are generally low to moderate, indicating it may not be as impactful on life satisfaction compared to economic or social factors.
+#### 1. Dataset Shape and Structure
+- The dataset consists of various observations related to well-being across countries over several years.
 
-## Conclusion
-The dataset is well-structured but requires addresses to missing values to ensure data completeness and integrity. Identified strong correlations, particularly between economic factors (like GDP) and quality of life measures (such as Social Support and Life Ladder), suggest critical relationships that warrant further investigation. Future analyses could include statistical testing or predictive modeling to provide deeper insights into these interrelationships.
+#### 2. Missing Values
+- The presence of missing values across several important fields, particularly in **Generosity** and **Perceptions of corruption**, raises concerns for thorough analyses.
 
-## Visualizations
-Here are some visualizations depicting various aspects of the data:
+#### 3. Data Types
+- The data types are appropriate for analysis, which is conducive to quantitative analysis and modeling.
 
-![Correlation Matrix](./happiness/correlation_matrix_resized.png)
-![Year Distribution](./happiness/year_distribution_resized.png)
-![Life Ladder Distribution](./happiness/Life_Ladder_distribution_resized.png)
-![Log GDP per Capita Distribution](./happiness/Log_GDP_per_capita_distribution_resized.png)
-![Country Name Bar Chart](./happiness/Country_name_bar_chart_resized.png)
+#### 4. Data Insights - Head of Data
+- The dataset provides the opportunity to analyze trends over time within specific countries, with Afghanistan displaying values across multiple years.
+
+#### 5. Correlations
+- The analysis of correlations suggests significant relationships among various factors affecting quality of life. Focusing on improving GDP, social support, and health could enhance life satisfaction.
+
+#### 6. Other Observations
+- The connections between **Economic indicators** and **Well-being** reinforce the importance of socioeconomic policies aimed at enhancing life quality.
+
+### Conclusion
+The dataset is robust for analyzing relationships between various factors affecting well-being across countries. However, addressing missing values is critical for ensuring the reliability of statistical models and analyses. The identified correlations imply that any interventions should emphasize improving economic conditions, healthcare systems, and social networks to enhance overall life satisfaction.
+
+![Correlation Matrix](./correlation_matrix_resized.png)
+![Year Distribution](./year_distribution_resized.png)
+![Life Ladder Distribution](./Life Ladder_distribution_resized.png)
+![Log GDP per Capita Distribution](./Log GDP per capita_distribution_resized.png)
+![Country Distribution](./Country name_bar_chart_resized.png)
