@@ -1,80 +1,101 @@
-# Data Summary Report
+# Dataset Overview Report
 
-## Dataset Overview
-The dataset under review consists of **2652 rows and 8 columns**, where each row represents a unique media entry, likely movies, and the columns contain various attributes regarding these entries.
+## Data Summary
+The dataset provides insights into movie ratings and contains the following characteristics:
 
-### Overview of Attributes
-- **date**: The release date of the movie.
-- **language**: Language in which the movie is available (e.g., Tamil, Telugu).
-- **type**: Type of media, predominantly 'movie'.
-- **title**: Name of the movie.
-- **by**: Contributors associated with the movie such as directors or actors.
-- **overall**: A rating indicating the overall quality of the movie.
-- **quality**: A rating assessing the quality of the movie.
-- **repeatability**: A rating indicating how likely the movie is to be watched again.
+- **Shape**: The dataset consists of **2652 rows** and **8 columns**.
 
-## Missing Values
-The dataset contains several missing values:
-- **'date'**: 99 entries are missing.
-- **'by'**: 262 entries are missing.
-- Other columns do not have any missing values.
+### Missing Values
+The distribution of missing values across columns is summarized as follows:
 
-The significant missing values in the 'by' column could potentially skew analysis, especially if those entries are relevant to overall trends or insights.
+| Column      | Missing Values |
+|-------------|----------------|
+| date        | 99             |
+| language    | 0              |
+| type        | 0              |
+| title       | 0              |
+| by          | 262            |
+| overall     | 0              |
+| quality     | 0              |
+| repeatability| 0             |
 
-## Data Types
-The dataset features a combination of categorical and numerical data types:
-- **Categorical (object types)**: `date`, `language`, `type`, `title`, `by`
-- **Numerical (int64 types)**: `overall`, `quality`, `repeatability`
+**Key Takeaway**: The most substantial missing values are in the **date** and **by** columns, which may impact analyses involving these fields.
 
-This structure indicates that categorical attributes may need to be encoded for analysis or modeling.
+### Data Types
+The data types for each column are categorized as follows:
 
-## Preview of Data (Head)
-Below are the first few records from the dataset:
+| Column        | Data Type |
+|---------------|-----------|
+| date          | object    |
+| language      | object    |
+| type          | object    |
+| title         | object    |
+| by            | object    |
+| overall       | int64     |
+| quality       | int64     |
+| repeatability  | int64     |
 
-| Date       | Language | Type  | Title        | By                           | Overall | Quality | Repeatability |
-|------------|----------|-------|--------------|------------------------------|---------|---------|---------------|
-| 15-Nov-24  | Tamil    | movie | Meiyazhagan  | Arvind Swamy, Karthi       | 4       | 5       | 1             |
-| 10-Nov-24  | Tamil    | movie | Vettaiyan    | Rajnikanth, Fahad Fazil     | 2       | 2       | 1             |
-| 09-Nov-24  | Tamil    | movie | Amaran       | Siva Karthikeyan, Sai Pallavi | 4       | 4       | 1             |
-| 11-Oct-24  | Telugu   | movie | Kushi        | Vijay Devarakonda, Samantha  | 3       | 3       | 1             |
-| 05-Oct-24  | Tamil    | movie | GOAT         | Vijay                        | 3       | 3       | 1             |
+**Observation**: Most fields contain categorical data, while the ratings are represented as numerical scores (int64).
 
-### Observations:
-1. Dates are formatted in `day-month-year`.
-2. Languages include **Tamil** and **Telugu**.
-3. All entries are labeled as 'movie', with ratings provided for overall experience, quality, and repeatability.
+### Sample Data (First Few Rows)
+Here's a glimpse of the initial entries in the dataset:
 
-## Correlations
-The correlation matrix showcases the following relationships among numeric attributes:
-- **Overall Rating**: 
-  - Correlation with itself: **1.0**
-  - Correlation with **Quality**: **0.83** (strong positive correlation)
-  - Correlation with **Repeatability**: **0.51** (moderate correlation)
-- **Quality Rating**:
-  - Correlation with **Overall**: **0.83**
-  - Correlation with **Repeatability**: **0.31** (weak correlation)
+| date        | language | type  | title         | by                          | overall | quality | repeatability |
+|-------------|----------|-------|---------------|-----------------------------|---------|---------|---------------|
+| 15-Nov-24   | Tamil    | movie | Meiyazhagan   | Arvind Swamy, Karthi       | 4       | 5       | 1             |
+| 10-Nov-24   | Tamil    | movie | Vettaiyan     | Rajnikanth, Fahad Fazil    | 2       | 2       | 1             |
+| 09-Nov-24   | Tamil    | movie | Amaran        | Siva Karthikeyan, Sai Pallavi | 4       | 4       | 1             |
+| 11-Oct-24   | Telugu   | movie | Kushi         | Vijay Devarakonda, Samantha | 3       | 3       | 1             |
+| 05-Oct-24   | Tamil    | movie | GOAT          | Vijay                       | 3       | 3       | 1             |
 
-These correlations suggest that as the quality rating increases, the overall rating likely increases as well. Repeatability seems somewhat independent of quality, indicating that other factors might influence the likelihood of a movie being rewatched.
+### Correlations
+The correlation matrix reveals relationships between different variables:
 
-## Conclusion
-The dataset provides a rich resource for analyzing the quality and enjoyment of movies in Tamil and Telugu. Attention should be given to the missing values in the 'date' and 'by' attributes, as they could be significant for certain analyses.
+| Variable         | overall | quality | repeatability |
+|------------------|---------|---------|---------------|
+| **overall**      | 1.0     | 0.8259  | 0.5126        |
+| **quality**      | 0.8259  | 1.0     | 0.3121        |
+| **repeatability**| 0.5126  | 0.3121  | 1.0           |
 
-### Recommendations for Future Analysis:
-- Investigate trends based on ratings over time.
-- Compare ratings across various languages and types of media.
-- Analyze the impact of specific contributors on ratings.
+**Analysis Insight**: The strong positive correlation of **overall** ratings with **quality** (0.826) indicates that higher quality scores are likely to result in better overall ratings.
 
-It is also recommended to address the missing values, especially for the 'by' attribute to improve the robustness of any predictive modeling or insights derived from the dataset.
+## Conclusion and Considerations
+1. **Data Imputation**: Attention is required for the missing values in **date** and **by** columns. Strategies for imputation should be explored to maximize data usability.
+
+2. **Date Formatting**: Transforming the **date** column into a standard datetime format will facilitate temporal analyses, such as trends in ratings over time.
+
+3. **Predictive Modeling**: The correlation between **overall** and **quality** scores can be leveraged for predictive analytics to estimate overall ratings based on given quality scores.
+
+4. **Analysis of Collaborators**: Exploring the missing data in the **by** column can illuminate potential trends regarding directors or cast members that are not represented, enhancing our analysis.
+
+This summary sets the stage for more detailed exploratory data analysis and modeling, particularly focusing on understanding the dynamics of movie ratings.
+
+---
 
 ## Visualizations
-The following charts provide additional insights into the data:
+The following charts provide a visual representation of various dataset characteristics:
 
-![Correlation Matrix](./correlation_matrix_resized.png)
-![Overall Rating Distribution](./overall_distribution_resized.png)
-![Quality Rating Distribution](./quality_distribution_resized.png)
-![Repeatability Distribution](./repeatability_distribution_resized.png)
-![Release Date Distribution](./date_bar_chart_resized.png)
-![Language Distribution](./language_bar_chart_resized.png)
-![Type Distribution](./type_bar_chart_resized.png)
+- Correlation Matrix:
+  ![Correlation Matrix](correlation_matrix_resized.png)
 
-This report summarizes key aspects of the dataset and serves as a basis for further exploration and analysis.
+- Overall Ratings Distribution:
+  ![Overall Ratings Distribution](overall_distribution_resized.png)
+
+- Quality Ratings Distribution:
+  ![Quality Ratings Distribution](quality_distribution_resized.png)
+
+- Repeatability Ratings Distribution:
+  ![Repeatability Ratings Distribution](repeatability_distribution_resized.png)
+
+- Movie Release Dates Frequency:
+  ![Date Bar Chart](date_bar_chart_resized.png)
+
+- Language Distribution:
+  ![Language Bar Chart](language_bar_chart_resized.png)
+
+- Movie Type Distribution:
+  ![Type Bar Chart](type_bar_chart_resized.png)
+
+--- 
+
+This analysis serves as a robust foundation for future investigations into the dataset, allowing for a deeper understanding of factors influencing movie ratings and qualities.

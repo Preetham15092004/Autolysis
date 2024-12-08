@@ -1,0 +1,541 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex a106148..b20cfc6 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -26,3 +26,6 @@[m [mDISTRICT_BOUNDARY.*[m
+ Preetham IITM/[m
+ Skillbanc_files/[m
+ icfai/[m
+[32m+[m[32mmovie_dataset/[m
+[32m+[m[32mODI_data/[m
+[41m+[m
+[1mdiff --git a/autolysis.py b/autolysis.py[m
+[1mindex 721cc4d..a04d37c 100644[m
+[1m--- a/autolysis.py[m
+[1m+++ b/autolysis.py[m
+[36m@@ -89,18 +89,24 @@[m [mdef visualize_numeric_distributions(data, column, filename):[m
+     plt.close()[m
+ [m
+ def visualize_categorical_counts(data, column, filename):[m
+[32m+[m[32m    """Generates a bar chart for the top 10 categories in a column."""[m
+     sanitized_filename = sanitize_filename(filename)[m
+[31m-    plt.figure(figsize=(10, 6))[m
+[32m+[m[32m    plt.figure(figsize=(12, 8))  # Increase figure size for readability[m
+     sns.barplot([m
+[31m-        x=data[column].value_counts().index[:10],[m
+[31m-        y=data[column].value_counts().values[:10],[m
+[31m-        palette="viridis",[m
+[32m+[m[32m        x=data[column].value_counts().index[:10],  # Top 10 categories[m
+[32m+[m[32m        y=data[column].value_counts().values[:10],  # Corresponding frequencies[m
+[32m+[m[32m        palette="viridis"[m
+     )[m
+[31m-    plt.xticks(rotation=45, ha="right")[m
+[32m+[m[32m    plt.xticks(rotation=45, ha="right")  # Rotate labels for readability[m
+     plt.title(f"Top 10 Categories in {column}")[m
+     plt.xlabel(column)[m
+     plt.ylabel("Frequency")[m
+[31m-    plt.savefig(sanitized_filename)[m
+[32m+[m[41m    [m
+[32m+[m[32m    # Automatically adjust layout to fit labels[m
+[32m+[m[32m    plt.tight_layout()[m
+[32m+[m[41m    [m
+[32m+[m[32m    # Save the plot[m
+[32m+[m[32m    plt.savefig(filename)[m
+     plt.close()[m
+ [m
+ def create_visualizations(data, data_summary, output_dir):[m
+[1mdiff --git a/goodreads/README.md b/goodreads/README.md[m
+[1mindex 92f4102..6c3adf8 100644[m
+[1m--- a/goodreads/README.md[m
+[1m+++ b/goodreads/README.md[m
+[36m@@ -1,94 +1,62 @@[m
+[31m-# Book Dataset Analysis Report[m
+[32m+[m[32m# Book Dataset Report[m
+ [m
+ ## Data Summary[m
+[32m+[m[32mThe dataset provides a comprehensive overview of a collection of books with various attributes related to their metadata, ratings, authorship, and publication details.[m
+ [m
+[31m-The dataset consists of a collection of book-related data with the following characteristics:[m
+[32m+[m[32m### Overview[m
+[32m+[m[32m- **Dataset Shape**: (10,000 rows, 23 columns)[m
+ [m
+[31m-- **Shape:** (10,000 rows, 23 columns)[m
+[31m-  [m
+ ### Missing Values[m
+[31m-The dataset reveals several attributes with missing values:[m
+[31m-[m
+[31m-- `isbn`: 700 missing entries[m
+[31m-- `isbn13`: 585 missing entries[m
+[31m-- `original_publication_year`: 21 missing entries[m
+[31m-- `original_title`: 585 missing entries[m
+[31m-- `language_code`: 1,084 missing entries[m
+[31m-[m
+[31m-All other attributes are complete, indicating that there are no missing values for them. This suggests potential inconsistencies in the recording of `isbn` and `isbn13`.[m
+[32m+[m[32m- The dataset contains missing values in several columns:[m
+[32m+[m[32m  - `isbn`: 700 missing values[m
+[32m+[m[32m  - `isbn13`: 585 missing values[m
+[32m+[m[32m  - `original_publication_year`: 21 missing values[m
+[32m+[m[32m  - `original_title`: 585 missing values[m
+[32m+[m[32m  - `language_code`: 1,084 missing values[m
+[32m+[m[32m- Key identifiers such as `book_id`, `goodreads_book_id`, and `authors` have no missing values.[m
+ [m
+ ### Data Types[m
+[31m-The data types of the features provide insight into their nature:[m
+[31m-[m
+[31m-- **Integer/Float Types:**[m
+[31m-  - `int64`: Used for identifiers, counts, and ratings.[m
+[31m-  - `float64`: Used for `isbn13` and `average_rating`.[m
+[31m-[m
+[31m-- **Object Types:**[m
+[31m-  - Attributes like `isbn`, `authors`, `original_title`, and `language_code` are string-based, indicating the need for string manipulation or categorical encoding in analyses or machine learning.[m
+[31m-[m
+[31m-### Sample Data[m
+[31m-Here are the first five entries from the dataset:[m
+[31m-[m
+[31m-| book_id | goodreads_book_id | best_book_id | work_id  | books_count | isbn        | isbn13         | authors                             | original_publication_year | original_title                                         | title                                                        | language_code | average_rating | ratings_count | work_ratings_count | work_text_reviews_count | ratings_1 | ratings_2 | ratings_3 | ratings_4 | ratings_5 | image_url                                               | small_image_url                                           |[m
+[31m-|---------|-------------------|---------------|----------|-------------|-------------|----------------|-------------------------------------|---------------------------|--------------------------------------------------------|------------------------------------------------------------|---------------|----------------|----------------|---------------------|--------------------------|-----------|-----------|-----------|-----------|-----------|---------------------------------------------------------|---------------------------------------------------------|[m
+[31m-| 1       | 2767052           | 2767052       | 2792775  | 272         | 439023483   | 9780439023480  | Suzanne Collins                    | 2008                      | The Hunger Games                                       | The Hunger Games (The Hunger Games, #1)                    | eng           | 4.34           | 4780653       | 4942365             | 155254                   | 66715     | 127936    | 560092    | 1481305   | 2706317   | ![Image](https://images.gr-assets.com/books/1447303603m/2767052.jpg) | ![Image](https://images.gr-assets.com/books/1447303603s/2767052.jpg) |[m
+[31m-| 2       | 3                 | 3             | 4640799  | 491         | 439554934   | 9780439554930  | J.K. Rowling, Mary GrandPré       | 1997                      | Harry Potter and the Philosopher's Stone               | Harry Potter and the Sorcerer's Stone (Harry Potter, #1) | eng           | 4.44           | 4602479       | 4800065             | 75867                    | 75504     | 101676    | 455024    | 1156318   | 3011543   | ![Image](https://images.gr-assets.com/books/1474154022m/3.jpg)     | ![Image](https://images.gr-assets.com/books/1474154022s/3.jpg)     |[m
+[31m-| 3       | 41865             | 41865         | 3212258  | 226         | 316015849   | 9780316015840  | Stephenie Meyer                   | 2005                      | Twilight                                               | Twilight (Twilight, #1)                                    | en-US         | 3.57           | 3866839       | 3916824             | 95009                    | 456191    | 436802    | 793319    | 875073    | 1355439   | ![Image](https://images.gr-assets.com/books/1361039443m/41865.jpg)  | ![Image](https://images.gr-assets.com/books/1361039443s/41865.jpg)  |[m
+[31m-| 4       | 2657              | 2657          | 3275794  | 487         | 61120081    | 9780061120080  | Harper Lee                          | 1960                      | To Kill a Mockingbird                                 | To Kill a Mockingbird                                      | eng           | 4.25           | 3198671       | 3340896             | 72586                    | 60427     | 117415    | 446835    | 1001952   | 1714267   | ![Image](https://images.gr-assets.com/books/1361975680m/2657.jpg)     | ![Image](https://images.gr-assets.com/books/1361975680s/2657.jpg)     |[m
+[31m-| 5       | 4671              | 4671          | 245494   | 1356        | 743273567   | 9780743273560  | F. Scott Fitzgerald                | 1925                      | The Great Gatsby                                        | The Great Gatsby                                           | eng           | 3.89           | 2683664       | 2773745             | 51992                    | 86236     | 197621    | 606158    | 936012    | 947718    | ![Image](https://images.gr-assets.com/books/1490528560m/4671.jpg)     | ![Image](https://images.gr-assets.com/books/1490528560s/4671.jpg)     |[m
+[31m-[m
+[31m-### Correlations[m
+[31m-The correlation matrix gives insights into how certain attributes relate to one another. Here are some notable observations:[m
+[31m-[m
+[31m-- **Strong Negative Correlation:**[m
+[31m-  - `ratings_count` and `work_ratings_count` show considerable negative correlations with `books_count` and various ratings categories (e.g., `ratings_1`, `ratings_2`).[m
+[31m-[m
+[31m-- **Strong Positive Correlation:**[m
+[31m-  - `ratings_count` and `work_ratings_count` are nearly perfectly correlated (0.995), suggesting that books with higher ratings tend to receive more reviews.[m
+[32m+[m[32m- The dataset features a mix of data types:[m
+[32m+[m[32m  - **Integer (`int64`)**: For identifiers and counts (e.g., `book_id`, `books_count`, `ratings_count`).[m
+[32m+[m[32m  - **Float (`float64`)**: Numeric values for average ratings and publication years (e.g., `average_rating`, `isbn13`).[m
+[32m+[m[32m  - **Object (`object`)**: Text fields such as `isbn`, `authors`, `original_title`, `title`, and URLs.[m
+ [m
+[31m-- **Independence with ISBN:**[m
+[31m-  - Attributes `isbn` and `isbn13` exhibit weak correlations, indicating that ISBN numbers do not significantly relate to a book's ratings or counts.[m
+[32m+[m[32m### Initial Records[m
+[32m+[m[32mThe first five records of the dataset showcase well-known titles:[m
+ [m
+[31m-## Insights[m
+[32m+[m[32m| Book ID | Goodreads Book ID | Best Book ID | Work ID  | Books Count | ISBN        | ISBN13              | Authors                                | Original Publication Year | Original Title                                              | Title                                                               | Language Code | Average Rating | Ratings Count | Work Ratings Count | Work Text Reviews Count | Ratings 1 | Ratings 2 | Ratings 3 | Ratings 4 | Ratings 5 | Image URL                                           | Small Image URL                                     |[m
+[32m+[m[32m|---------|-------------------|--------------|----------|-------------|-------------|---------------------|----------------------------------------|--------------------------|-----------------------------------------------------------|---------------------------------------------------------------------|---------------|----------------|----------------|---------------------|-------------------------|------------|------------|------------|------------|------------|------------------------------------------------------|-----------------------------------------------------|[m
+[32m+[m[32m| 1       | 2767052           | 2767052      | 2792775  | 272         | 439023483   | 9780439023480.0     | Suzanne Collins                        | 2008.0                   | The Hunger Games                                          | The Hunger Games (The Hunger Games, #1)                             | eng           | 4.34           | 4780653        | 4942365             | 155254                 | 66715      | 127936     | 560092     | 1481305    | 2706317    | [Image](https://images.gr-assets.com/books/1447303603m/2767052.jpg) | [Small Image](https://images.gr-assets.com/books/1447303603s/2767052.jpg) |[m
+[32m+[m[32m| 2       | 3                 | 3            | 4640799  | 491         | 439554934   | 9780439554930.0     | J.K. Rowling, Mary GrandPré           | 1997.0                   | Harry Potter and the Philosopher's Stone                 | Harry Potter and the Sorcerer's Stone (Harry Potter, #1)            | eng           | 4.44           | 4602479        | 4800065             | 75867                  | 75504      | 101676     | 455024     | 1156318    | 3011543    | [Image](https://images.gr-assets.com/books/1474154022m/3.jpg)             | [Small Image](https://images.gr-assets.com/books/1474154022s/3.jpg) |[m
+[32m+[m[32m| 3       | 41865             | 41865        | 3212258  | 226         | 316015849   | 9780316015840.0     | Stephenie Meyer                        | 2005.0                   | Twilight                                                 | Twilight (Twilight, #1)                                          | en-US         | 3.57           | 3866839        | 3916824             | 95009                  | 456191     | 436802     | 793319     | 875073     | 1355439    | [Image](https://images.gr-assets.com/books/1361039443m/41865.jpg)      | [Small Image](https://images.gr-assets.com/books/1361039443s/41865.jpg) |[m
+[32m+[m[32m| 4       | 2657              | 2657         | 3275794  | 487         | 61120081    | 9780061120080.0     | Harper Lee                             | 1960.0                   | To Kill a Mockingbird                                   | To Kill a Mockingbird                                           | eng           | 4.25           | 3198671        | 3340896             | 72586                  | 60427      | 117415     | 446835     | 1001952    | 1714267    | [Image](https://images.gr-assets.com/books/1361975680m/2657.jpg)       | [Small Image](https://images.gr-assets.com/books/1361975680s/2657.jpg) |[m
+[32m+[m[32m| 5       | 4671              | 4671         | 245494   | 1356        | 743273567   | 9780743273560.0     | F. Scott Fitzgerald                    | 1925.0                   | The Great Gatsby                                        | The Great Gatsby                                                | eng           | 3.89           | 2683664        | 2773745             | 51992                  | 86236      | 197621     | 606158     | 936012     | 947718     | [Image](https://images.gr-assets.com/books/1490528560m/4671.jpg)       | [Small Image](https://images.gr-assets.com/books/1490528560s/4671.jpg) |[m
+ [m
+[31m-This dataset summary presents valuable insights into the characteristics and structure of the dataset, which can drive future analyses and predictions.[m
+[32m+[m[32m### Correlation Analysis[m
+[32m+[m[32mThe correlation matrix reveals relationships between various attributes. Here are some key insights:[m
+ [m
+[31m-### Observations[m
+[32m+[m[32m- **Ratings Correlations**:[m[41m [m
+[32m+[m[32m  - Strong positive correlations exist between `ratings_count`, `work_ratings_count`, and individual rating categories (`ratings_1` to `ratings_5`), indicating that books with higher total ratings also receive more ratings across categories.[m
+[32m+[m[32m  - There are negative correlations between `average_rating` and various counts, suggesting a complex relationship where highly rated books may not be the most frequently rated.[m
+ [m
+[31m-1. **Popularity Indicators:**[m
+[31m-   - Features such as `ratings_count`, `average_rating`, and `work_ratings_count` are critical for understanding a book's reception.[m
+[31m-   - The attributes related to rating counts could help develop models to predict a book's future popularity based on historical data usage.[m
+[32m+[m[32m- **Publication Year Insights**:[m[41m [m
+[32m+[m[32m  - The `original_publication_year` has a weak correlation with `average_rating`, implying that newer books do not necessarily have better ratings compared to older titles.[m
+ [m
+[31m-2. **Data Quality & Preparation:**[m
+[31m-   - The presence of missing values (especially in `isbn` and `language_code`) will require attention during preprocessing. Adjustments can involve imputation methods or the exclusion of non-essential entries based on analysis goals.[m
+[32m+[m[32m![Chart](./correlation_matrix_resized.png)[m
+ [m
+[31m-3. **Potential for Further Analysis:**[m
+[31m-   - The dataset allows for various analytics, such as exploring trends over publication years or identifying authors with consistently high ratings.[m
+[31m-   - Cluster analysis could segment authors or genres based on ratings to identify patterns or niche markets.[m
+[32m+[m[32m### Additional Insights[m
+[32m+[m[32m- **High Ratings Count**: The dataset features titles with high ratings and engagement, suggesting it includes popular books, notably from prominent authors.[m
+[32m+[m[32m- **Language Representation**: The dataset contains a significant number of missing values in the `language_code` field, indicating a potential gap in linguistic diversity.[m
+ [m
+[31m-4. **Visualization Opportunities:**[m
+[31m-   - Histograms visualizing `average_rating` and `ratings_count`.[m
+[31m-   - Correlation heatmaps to clarify relationships among attributes.[m
+[32m+[m[32m### Conclusion[m
+[32m+[m[32mThis dataset is well-suited for analyses focused on trends in popular literature, author performance, and reader engagement. Suggested analyses include exploring the impact of publication years on ratings and examining the relationship between rating counts and average ratings. Attention should be given to addressing missing values to enhance the dataset's usability for deeper analyses.[m
+ [m
+[31m-## Charts[m
+[31m-[m
+[31m-Here are the visualizations from the dataset:[m
+[31m-[m
+[31m-![Correlation Matrix](./correlation_matrix_resized.png)[m
+[32m+[m[32m#### Visualizations[m
+[32m+[m[32mHere are some additional charts to visualize various aspects of the dataset:[m
+ [m
+ ![Book ID Distribution](./book_id_distribution_resized.png)[m
+[31m-[m
+ ![Goodreads Book ID Distribution](./goodreads_book_id_distribution_resized.png)[m
+[31m-[m
+ ![Best Book ID Distribution](./best_book_id_distribution_resized.png)[m
+[31m-[m
+[31m-![ISBN Distribution](./isbn_bar_chart_resized.png)[m
+[31m-[m
+[31m-![Authors Distribution](./authors_bar_chart_resized.png)[m
+[31m-[m
+[31m-![Original Title Distribution](./original_title_bar_chart_resized.png)[m
+[31m-[m
+[31m-## Conclusion[m
+[31m-[m
+[31m-In conclusion, this dataset holds significant information for analyzing trends in book ratings, author popularity, and readers' preferences. Through careful handling of missing values and exploration of relationships between features, deeper insights can be garnered. This provides a valuable foundation for future analyses related to books and their reception in the reading community.[m
+\ No newline at end of file[m
+[32m+[m[32m![ISBN Bar Chart](./isbn_bar_chart_resized.png)[m
+[32m+[m[32m![Authors Bar Chart](./authors_bar_chart_resized.png)[m
+[32m+[m[32m![Original Title Bar Chart](./original_title_bar_chart_resized.png)[m
+\ No newline at end of file[m
+[1mdiff --git a/goodreads/authors_bar_chart.png b/goodreads/authors_bar_chart.png[m
+[1mindex c23cc7a..a443dc4 100644[m
+Binary files a/goodreads/authors_bar_chart.png and b/goodreads/authors_bar_chart.png differ
+[1mdiff --git a/goodreads/authors_bar_chart_resized.png b/goodreads/authors_bar_chart_resized.png[m
+[1mindex a1db31b..fced4d0 100644[m
+Binary files a/goodreads/authors_bar_chart_resized.png and b/goodreads/authors_bar_chart_resized.png differ
+[1mdiff --git a/goodreads/isbn_bar_chart.png b/goodreads/isbn_bar_chart.png[m
+[1mindex 0eb1a4d..222d547 100644[m
+Binary files a/goodreads/isbn_bar_chart.png and b/goodreads/isbn_bar_chart.png differ
+[1mdiff --git a/goodreads/isbn_bar_chart_resized.png b/goodreads/isbn_bar_chart_resized.png[m
+[1mindex 3f14659..6417840 100644[m
+Binary files a/goodreads/isbn_bar_chart_resized.png and b/goodreads/isbn_bar_chart_resized.png differ
+[1mdiff --git a/goodreads/original_title_bar_chart.png b/goodreads/original_title_bar_chart.png[m
+[1mindex 1f7bd2b..6148be1 100644[m
+Binary files a/goodreads/original_title_bar_chart.png and b/goodreads/original_title_bar_chart.png differ
+[1mdiff --git a/goodreads/original_title_bar_chart_resized.png b/goodreads/original_title_bar_chart_resized.png[m
+[1mindex 2441da0..bc4f153 100644[m
+Binary files a/goodreads/original_title_bar_chart_resized.png and b/goodreads/original_title_bar_chart_resized.png differ
+[1mdiff --git a/happiness/Country name_bar_chart.png b/happiness/Country name_bar_chart.png[m
+[1mindex 4a0aa9b..25f4163 100644[m
+Binary files a/happiness/Country name_bar_chart.png and b/happiness/Country name_bar_chart.png differ
+[1mdiff --git a/happiness/README.md b/happiness/README.md[m
+[1mindex b89033b..c6f4dac 100644[m
+[1m--- a/happiness/README.md[m
+[1m+++ b/happiness/README.md[m
+[36m@@ -1,81 +1,91 @@[m
+[31m-# Well-Being Dataset Analysis Report[m
+[31m-[m
+[31m-## Data Summary[m
+[31m-[m
+[31m-The dataset contains information on various factors that impact well-being across different countries and years. Below is a detailed summary of key characteristics of the dataset.[m
+[31m-[m
+[31m-### 1. Dimensions of the Dataset[m
+[31m-- **Shape**: The dataset has **2363 rows** and **11 columns**, indicating a substantive amount of observations available for analysis.[m
+[31m-[m
+[31m-### 2. Missing Values[m
+[31m-The dataset exhibits several columns with missing values:[m
+[31m-- **Generosity**: 81 missing values[m
+[31m-- **Perceptions of corruption**: 125 missing values[m
+[31m-- **Healthy life expectancy at birth**: 63 missing values[m
+[31m-- **Log GDP per capita**: 28 missing values[m
+[31m-- **Social support**: 13 missing values[m
+[31m-- Other columns do not show significant missing values.[m
+[31m-[m
+[31m-It is essential to address these missing values in your analysis, considering the possible approaches include imputation, exclusion, or using caution in interpretation.[m
+[31m-[m
+[31m-### 3. Data Types[m
+[31m-The following data types are present in the dataset:[m
+[31m-- Categorical:[m
+[31m-  - **Country name**: `object`[m
+[31m-- Numerical:[m
+[31m-  - **year**: `int64`[m
+[31m-  - Continuous variables (all in `float64`):[m
+[31m-    - **Life Ladder**[m
+[31m-    - **Log GDP per capita**[m
+[31m-    - **Social support**[m
+[31m-    - **Healthy life expectancy at birth**[m
+[31m-    - **Freedom to make life choices**[m
+[31m-    - **Generosity**[m
+[31m-    - **Perceptions of corruption**[m
+[31m-    - **Positive affect**[m
+[31m-    - **Negative affect**[m
+[31m-[m
+[31m-This setup allows for a range of statistical analyses, particularly regression analyses.[m
+[31m-[m
+[31m-### 4. Sample Data[m
+[31m-Here is a glimpse of the first five records sampled from the dataset:[m
+[31m-[m
+[31m-| Country name | year | Life Ladder | Log GDP per capita | Social support | Healthy life expectancy at birth | Freedom to make life choices | Generosity | Perceptions of corruption | Positive affect | Negative affect |[m
+[31m-|--------------|------|-------------|---------------------|----------------|---------------------------------|------------------------------|------------|---------------------------|----------------|-----------------|[m
+[31m-| Afghanistan  | 2008 | 3.724       | 7.35                | 0.451          | 50.5                            | 0.718                        | 0.164      | 0.882                     | 0.414          | 0.258           |[m
+[31m-| Afghanistan  | 2009 | 4.402       | 7.509               | 0.552          | 50.8                            | 0.679                        | 0.187      | 0.85                      | 0.481          | 0.237           |[m
+[31m-| Afghanistan  | 2010 | 4.758       | 7.614               | 0.539          | 51.1                            | 0.6                          | 0.118      | 0.707                     | 0.517          | 0.275           |[m
+[31m-| Afghanistan  | 2011 | 3.832       | 7.581               | 0.521          | 51.4                            | 0.496                        | 0.16       | 0.731                     | 0.48           | 0.267           |[m
+[31m-| Afghanistan  | 2012 | 3.783       | 7.661               | 0.521          | 51.7                            | 0.531                        | 0.234      | 0.776                     | 0.614          | 0.268           |[m
+[31m-[m
+[31m-### 5. Correlation Analysis[m
+[31m-The correlation matrix highlights important interrelationships among variables:[m
+[31m-[m
+[31m-- **Life Ladder** shows strong positive correlations with:[m
+[32m+[m[32m# Data Analysis Report on Well-being and Socioeconomic Factors[m
+[32m+[m
+[32m+[m[32m## 1. Dataset Overview[m
+[32m+[m[32m- **Shape**: The dataset consists of **2363 rows** and **11 columns**, indicating data on 2363 observations (likely countries over time) and 11 attributes for analysis.[m
+[32m+[m
+[32m+[m[32m## 2. Attributes and Data Types[m
+[32m+[m[32mThe dataset comprises the following columns:[m
+[32m+[m
+[32m+[m[32m| Column Name                             | Data Type |[m
+[32m+[m[32m|-----------------------------------------|-----------|[m
+[32m+[m[32m| Country name                            | string    |[m
+[32m+[m[32m| year                                    | integer   |[m
+[32m+[m[32m| Life Ladder                             | float     |[m
+[32m+[m[32m| Log GDP per capita                      | float     |[m
+[32m+[m[32m| Social support                          | float     |[m
+[32m+[m[32m| Healthy life expectancy at birth        | float     |[m
+[32m+[m[32m| Freedom to make life choices            | float     |[m
+[32m+[m[32m| Generosity                              | float     |[m
+[32m+[m[32m| Perceptions of corruption               | float     |[m
+[32m+[m[32m| Positive affect                         | float     |[m
+[32m+[m[32m| Negative affect                         | float     |[m
+[32m+[m
+[32m+[m[32m### Description of Attributes[m
+[32m+[m[32m- **Life Ladder**: A measure of subjective well-being.[m
+[32m+[m[32m- **Log GDP per capita**: Economic measure indicating the wealth of a country.[m
+[32m+[m[32m- **Social support**: Reflects the availability of community support.[m
+[32m+[m[32m- **Healthy life expectancy at birth**: Expected number of years a newborn can expect to live in good health.[m
+[32m+[m[32m- **Freedom to make life choices**: The extent of individual freedom experienced in society.[m
+[32m+[m[32m- **Generosity**: Measures of self-reported generosity.[m
+[32m+[m[32m- **Perceptions of corruption**: Indicates the public’s perception of corruption in society.[m
+[32m+[m[32m- **Positive affect**: Measure of positive emotions.[m
+[32m+[m[32m- **Negative affect**: Measure of negative emotions.[m
+[32m+[m
+[32m+[m[32m## 3. Missing Values[m
+[32m+[m[32mMissing values are present in several columns, notably:[m
+[32m+[m
+[32m+[m[32m| Attribute                           | Missing Values | Percentage Missing |[m
+[32m+[m[32m|-------------------------------------|----------------|--------------------|[m
+[32m+[m[32m| Generosity                          | 81             | 3.4%               |[m
+[32m+[m[32m| Perceptions of corruption           | 125            | 5.3%               |[m
+[32m+[m[32m| Log GDP per capita                 | 28             | 1.2%               |[m
+[32m+[m[32m| Social support                      | 13             | 0.6%               |[m
+[32m+[m[32m| Healthy life expectancy at birth    | 63             | 2.7%               |[m
+[32m+[m[32m| Freedom to make life choices        | 36             | 1.5%               |[m
+[32m+[m[32m| Positive affect                     | 24             | 1%                 |[m
+[32m+[m[32m| Negative affect                     | 16             | 0.7%               |[m
+[32m+[m
+[32m+[m[32mThis missing data could impact the analysis and might need to be addressed through imputation or exclusion, depending on the analysis method.[m
+[32m+[m
+[32m+[m[32m## 4. Correlation Analysis[m
+[32m+[m[32mThe correlation matrix provides insights into how different attributes relate to one another, with values ranging from -1 (perfect negative correlation) to 1 (perfect positive correlation).[m
+[32m+[m
+[32m+[m[32m### Strongest Correlations[m
+[32m+[m[32m- **Life Ladder** shows a strong positive correlation with:[m
+   - **Log GDP per capita**: 0.78[m
+   - **Social support**: 0.72[m
+[31m-- A significant negative correlation exists between:[m
+[31m-  - **Perceptions of corruption** and **Life Ladder**: -0.43[m
+[31m-- **Freedom to make life choices** correlates moderately with well-being: 0.54[m
+[31m-- The dataset indicates that higher **Negative affect** is associated with lower **Life Ladder**: -0.35.[m
+[32m+[m[32m  - **Healthy life expectancy**: 0.71[m
+ [m
+[31m-### 6. Actionable Insights[m
+[31m-Given the correlations observed:[m
+[31m-- Enhancing **Log GDP per capita**, improving **Social support**, and reducing **perceptions of corruption** could significantly elevate subjective well-being.[m
+[31m-- Future analyses can explore predictive modeling, causal inference, or machine-learning applications to further leverage these insights.[m
+[32m+[m[32mThese strong correlations suggest that countries with higher GDP per capita, better health, and social support tend to report higher well-being.[m
+ [m
+[31m-### Conclusion[m
+[31m-This dataset presents ample opportunities for developing a deeper understanding of the dynamics of well-being across countries and years. Addressing missing values while exploring inter-variable relationships will yield valuable insights into the socio-economic and health factors that influence quality of life. Future analyses could target predictive modeling or longitudinal explorations to assess changes over time.[m
+[32m+[m[32m### Corruption Insights[m
+[32m+[m[32m- **Negative correlation** with well-being indicators such as:[m
+[32m+[m[32m  - **Life Ladder**: -0.43[m
+[32m+[m[32m  - **Positive affect**: -0.27[m
+[32m+[m[32m  - **Freedom to make life choices**: -0.47[m
+ [m
+[31m-### Visualizations[m
+[31m-The following charts provide additional context to the analysis:[m
+[32m+[m[32mThis indicates that higher perceived corruption is linked to lower life satisfaction and happiness.[m
+ [m
+[32m+[m[32m### Negative Affect[m
+[32m+[m[32m- Has a substantial correlation with:[m
+[32m+[m[32m  - **Negative correlation with Life Ladder**: -0.35, suggesting that as negative emotions increase, life satisfaction decreases.[m
+[32m+[m
+[32m+[m[32m## 5. Implications[m
+[32m+[m[32mThe data could be used to infer how socioeconomic factors (like GDP and social support) and individual perceptions (like freedom and corruption) interplay to affect overall happiness and well-being. An emphasis on improving GDP per capita and social support systems may enhance life satisfaction, while addressing corruption perceptions could also contribute positively.[m
+[32m+[m
+[32m+[m[32m## 6. Next Steps for Analysis[m
+[32m+[m[32m1. **Handling Missing Values**: Determine appropriate strategies (e.g., imputation or removal) for the missing data.[m
+[32m+[m[32m2. **In-depth Analysis**: Utilize regression models to explore the impact of GDP, social support, etc., on the Life Ladder while controlling for confounding factors.[m
+[32m+[m[32m3. **Visualizations**: Create visual representations (scatter plots, box plots) of relationships and distributions for deeper insights.[m
+[32m+[m
+[32m+[m[32m## Conclusion[m
+[32m+[m[32mThe dataset serves as a rich resource for studying the factors contributing to well-being across various nations and times, providing a foundation for both exploratory and predictive analyses.[m
+[32m+[m
+[32m+[m[32m---[m
+[32m+[m
+[32m+[m[32m## Included Visualizations[m
+ ![Correlation Matrix](./correlation_matrix_resized.png)[m
+ ![Year Distribution](./year_distribution_resized.png)[m
+ ![Life Ladder Distribution](./Life_Ladder_distribution_resized.png)[m
+ ![Log GDP per Capita Distribution](./Log_GDP_per_capita_distribution_resized.png)[m
+[31m-![Country Name Bar Chart](./Country_name_bar_chart_resized.png)[m
+[31m-[m
+[31m---- [m
+[31m-[m
+[31m-This report provides a comprehensive overview of the dataset while highlighting trends, insights, and directions for future research or policy implications.[m
+\ No newline at end of file[m
+[32m+[m[32m![Country Name Bar Chart](./Country_name_bar_chart_resized.png)[m
+\ No newline at end of file[m
+[1mdiff --git a/media/README.md b/media/README.md[m
+[1mindex 693096b..ce3080e 100644[m
+[1m--- a/media/README.md[m
+[1m+++ b/media/README.md[m
+[36m@@ -1,67 +1,80 @@[m
+[31m-# Data Analysis Report[m
+[31m-[m
+[31m-## Data Summary[m
+[31m-[m
+[31m-### Dataset Overview[m
+[31m-[m
+[31m-- **Shape**: The dataset contains **2,652 rows** and **8 columns** (features). [m
+[31m-- **Missing Values**: [m
+[31m-  - The `date` column has **99 missing values**.[m
+[31m-  - The `by` column has a significant **262 missing values**.[m
+[31m-  - No missing values were found in `language`, `type`, `title`, `overall`, `quality`, and `repeatability`.[m
+[31m-  [m
+[31m-- **Data Types**:[m
+[31m-  - **Categorical (`object`)**: `date`, `language`, `type`, `title`, `by`[m
+[31m-  - **Numerical (`int64`)**: `overall`, `quality`, `repeatability`[m
+[31m-[m
+[31m-### Initial Data Observation (Head of the Dataset)[m
+[31m-[m
+[31m-The first five records are as follows:[m
+[31m-[m
+[31m-| Date       | Language | Type  | Title        | By                             | Overall | Quality | Repeatability |[m
+[31m-|------------|----------|-------|--------------|--------------------------------|---------|---------|---------------|[m
+[31m-| 15-Nov-24  | Tamil    | movie | Meiyazhagan  | Arvind Swamy, Karthi          | 4       | 5       | 1             |[m
+[31m-| 10-Nov-24  | Tamil    | movie | Vettaiyan    | Rajnikanth, Fahad Fazil       | 2       | 2       | 1             |[m
+[32m+[m[32m# Data Summary Report[m
+[32m+[m
+[32m+[m[32m## Dataset Overview[m
+[32m+[m[32mThe dataset under review consists of **2652 rows and 8 columns**, where each row represents a unique media entry, likely movies, and the columns contain various attributes regarding these entries.[m
+[32m+[m
+[32m+[m[32m### Overview of Attributes[m
+[32m+[m[32m- **date**: The release date of the movie.[m
+[32m+[m[32m- **language**: Language in which the movie is available (e.g., Tamil, Telugu).[m
+[32m+[m[32m- **type**: Type of media, predominantly 'movie'.[m
+[32m+[m[32m- **title**: Name of the movie.[m
+[32m+[m[32m- **by**: Contributors associated with the movie such as directors or actors.[m
+[32m+[m[32m- **overall**: A rating indicating the overall quality of the movie.[m
+[32m+[m[32m- **quality**: A rating assessing the quality of the movie.[m
+[32m+[m[32m- **repeatability**: A rating indicating how likely the movie is to be watched again.[m
+[32m+[m
+[32m+[m[32m## Missing Values[m
+[32m+[m[32mThe dataset contains several missing values:[m
+[32m+[m[32m- **'date'**: 99 entries are missing.[m
+[32m+[m[32m- **'by'**: 262 entries are missing.[m
+[32m+[m[32m- Other columns do not have any missing values.[m
+[32m+[m
+[32m+[m[32mThe significant missing values in the 'by' column could potentially skew analysis, especially if those entries are relevant to overall trends or insights.[m
+[32m+[m
+[32m+[m[32m## Data Types[m
+[32m+[m[32mThe dataset features a combination of categorical and numerical data types:[m
+[32m+[m[32m- **Categorical (object types)**: `date`, `language`, `type`, `title`, `by`[m
+[32m+[m[32m- **Numerical (int64 types)**: `overall`, `quality`, `repeatability`[m
+[32m+[m
+[32m+[m[32mThis structure indicates that categorical attributes may need to be encoded for analysis or modeling.[m
+[32m+[m
+[32m+[m[32m## Preview of Data (Head)[m
+[32m+[m[32mBelow are the first few records from the dataset:[m
+[32m+[m
+[32m+[m[32m| Date       | Language | Type  | Title        | By                           | Overall | Quality | Repeatability |[m
+[32m+[m[32m|------------|----------|-------|--------------|------------------------------|---------|---------|---------------|[m
+[32m+[m[32m| 15-Nov-24  | Tamil    | movie | Meiyazhagan  | Arvind Swamy, Karthi       | 4       | 5       | 1             |[m
+[32m+[m[32m| 10-Nov-24  | Tamil    | movie | Vettaiyan    | Rajnikanth, Fahad Fazil     | 2       | 2       | 1             |[m
+ | 09-Nov-24  | Tamil    | movie | Amaran       | Siva Karthikeyan, Sai Pallavi | 4       | 4       | 1             |[m
+[31m-| 11-Oct-24  | Telugu   | movie | Kushi        | Vijay Devarakonda, Samantha    | 3       | 3       | 1             |[m
+[31m-| 05-Oct-24  | Tamil    | movie | GOAT         | Vijay                          | 3       | 3       | 1             |[m
+[31m-[m
+[31m-### Correlation Analysis[m
+[31m-[m
+[31m-The correlation between the numerical variables reveals:[m
+[31m-[m
+[31m-- **Overall vs. Quality**: Strong positive correlation (0.83)[m
+[31m-- **Overall vs. Repeatability**: Moderate positive correlation (0.51)[m
+[31m-- **Quality vs. Repeatability**: Weak to moderate correlation (0.31)[m
+[32m+[m[32m| 11-Oct-24  | Telugu   | movie | Kushi        | Vijay Devarakonda, Samantha  | 3       | 3       | 1             |[m
+[32m+[m[32m| 05-Oct-24  | Tamil    | movie | GOAT         | Vijay                        | 3       | 3       | 1             |[m
+[32m+[m
+[32m+[m[32m### Observations:[m
+[32m+[m[32m1. Dates are formatted in `day-month-year`.[m
+[32m+[m[32m2. Languages include **Tamil** and **Telugu**.[m
+[32m+[m[32m3. All entries are labeled as 'movie', with ratings provided for overall experience, quality, and repeatability.[m
+[32m+[m
+[32m+[m[32m## Correlations[m
+[32m+[m[32mThe correlation matrix showcases the following relationships among numeric attributes:[m
+[32m+[m[32m- **Overall Rating**:[m[41m [m
+[32m+[m[32m  - Correlation with itself: **1.0**[m
+[32m+[m[32m  - Correlation with **Quality**: **0.83** (strong positive correlation)[m
+[32m+[m[32m  - Correlation with **Repeatability**: **0.51** (moderate correlation)[m
+[32m+[m[32m- **Quality Rating**:[m
+[32m+[m[32m  - Correlation with **Overall**: **0.83**[m
+[32m+[m[32m  - Correlation with **Repeatability**: **0.31** (weak correlation)[m
+[32m+[m
+[32m+[m[32mThese correlations suggest that as the quality rating increases, the overall rating likely increases as well. Repeatability seems somewhat independent of quality, indicating that other factors might influence the likelihood of a movie being rewatched.[m
+ [m
+[31m-## Insights[m
+[31m-[m
+[31m-1. **Missing Values Handling**: The missing values in the `date` and `by` columns need attention. Imputation methods or excluding these rows might be considered based on the analysis goals.[m
+[31m-[m
+[31m-2. **Datetime Conversion**: The `date` column should be converted to a datetime format to facilitate time-based analysis.[m
+[31m-[m
+[31m-3. **Categorical Insights**: The dataset includes a mix of languages, which may allow the identification of regional trends or preferences.[m
+[31m-[m
+[31m-4. **Ratings Analysis**: The presence of varied ratings for `overall`, `quality`, and `repeatability` provides a rich ground for exploring trends and correlations.[m
+[31m-[m
+[31m-5. **Further Exploration**: The correlations suggest potential areas for regression analysis, with the possibility of predicting ratings based on other features.[m
+[32m+[m[32m## Conclusion[m
+[32m+[m[32mThe dataset provides a rich resource for analyzing the quality and enjoyment of movies in Tamil and Telugu. Attention should be given to the missing values in the 'date' and 'by' attributes, as they could be significant for certain analyses.[m
+ [m
+[31m-## Potential Considerations for Analysis[m
+[32m+[m[32m### Recommendations for Future Analysis:[m
+[32m+[m[32m- Investigate trends based on ratings over time.[m
+[32m+[m[32m- Compare ratings across various languages and types of media.[m
+[32m+[m[32m- Analyze the impact of specific contributors on ratings.[m
+ [m
+[31m-1. **Exploratory Data Analysis (EDA)**: Visualizations can expand the understanding of the data distributions and the connections among features.[m
+[31m-2. **Statistical Modeling**: Consider using regression models to explore how quality and repeatability can predict overall ratings.[m
+[31m-3. **Content Analysis**: Investigating the relationships between contributors (`by`) and ratings could yield insightful patterns on collaborative works.[m
+[32m+[m[32mIt is also recommended to address the missing values, especially for the 'by' attribute to improve the robustness of any predictive modeling or insights derived from the dataset.[m
+ [m
+ ## Visualizations[m
+[32m+[m[32mThe following charts provide additional insights into the data:[m
+ [m
+ ![Correlation Matrix](./correlation_matrix_resized.png)[m
+[31m-![Overall Distribution](./overall_distribution_resized.png)[m
+[31m-![Quality Distribution](./quality_distribution_resized.png)[m
+[32m+[m[32m![Overall Rating Distribution](./overall_distribution_resized.png)[m
+[32m+[m[32m![Quality Rating Distribution](./quality_distribution_resized.png)[m
+ ![Repeatability Distribution](./repeatability_distribution_resized.png)[m
+[31m-![Date Bar Chart](./date_bar_chart_resized.png)[m
+[31m-![Language Bar Chart](./language_bar_chart_resized.png)[m
+[31m-![Type Bar Chart](./type_bar_chart_resized.png)[m
+[31m-[m
+[31m-## Conclusion[m
+[32m+[m[32m![Release Date Distribution](./date_bar_chart_resized.png)[m
+[32m+[m[32m![Language Distribution](./language_bar_chart_resized.png)[m
+[32m+[m[32m![Type Distribution](./type_bar_chart_resized.png)[m
+ [m
+[31m-The dataset is rich with information and presents several opportunities for exploration and analysis. Addressing the missing values and appropriately leveraging the dataset’s features will be crucial to derive actionable insights. Further visualizations and analyses will enhance the understanding of trends and relationships within the data.[m
+\ No newline at end of file[m
+[32m+[m[32mThis report summarizes key aspects of the dataset and serves as a basis for further exploration and analysis.[m
+\ No newline at end of file[m
+[1mdiff --git a/media/date_bar_chart.png b/media/date_bar_chart.png[m
+[1mindex efe654d..5406afe 100644[m
+Binary files a/media/date_bar_chart.png and b/media/date_bar_chart.png differ
+[1mdiff --git a/media/date_bar_chart_resized.png b/media/date_bar_chart_resized.png[m
+[1mindex c3ebf8a..48f9c83 100644[m
+Binary files a/media/date_bar_chart_resized.png and b/media/date_bar_chart_resized.png differ
+[1mdiff --git a/media/language_bar_chart.png b/media/language_bar_chart.png[m
+[1mindex 09b9e69..1b8f0b6 100644[m
+Binary files a/media/language_bar_chart.png and b/media/language_bar_chart.png differ
+[1mdiff --git a/media/language_bar_chart_resized.png b/media/language_bar_chart_resized.png[m
+[1mindex 1c01114..45d29f6 100644[m
+Binary files a/media/language_bar_chart_resized.png and b/media/language_bar_chart_resized.png differ
+[1mdiff --git a/media/type_bar_chart.png b/media/type_bar_chart.png[m
+[1mindex 6187830..048570e 100644[m
+Binary files a/media/type_bar_chart.png and b/media/type_bar_chart.png differ
+[1mdiff --git a/media/type_bar_chart_resized.png b/media/type_bar_chart_resized.png[m
+[1mindex 39dee24..43d1a32 100644[m
+Binary files a/media/type_bar_chart_resized.png and b/media/type_bar_chart_resized.png differ

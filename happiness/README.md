@@ -1,91 +1,75 @@
-# Data Analysis Report on Well-being and Socioeconomic Factors
+# Dataset Report: Well-being and Economic Factors Across Countries
 
-## 1. Dataset Overview
-- **Shape**: The dataset consists of **2363 rows** and **11 columns**, indicating data on 2363 observations (likely countries over time) and 11 attributes for analysis.
+## Data Summary
+This report summarizes a dataset that focuses on various metrics related to well-being, economic factors, and social attributes across different countries and years. Below are the specific characteristics of the dataset:
 
-## 2. Attributes and Data Types
-The dataset comprises the following columns:
+- **Shape**: (2363, 11)
+- **Missing Values**:
+  - `Country name`: 0
+  - `year`: 0
+  - `Life Ladder`: 0
+  - `Log GDP per capita`: 28
+  - `Social support`: 13
+  - `Healthy life expectancy at birth`: 63
+  - `Freedom to make life choices`: 36
+  - `Generosity`: 81
+  - `Perceptions of corruption`: 125
+  - `Positive affect`: 24
+  - `Negative affect`: 16
+- **Data Types**:
+  - `Country name`: object
+  - `year`: int64
+  - Remaining columns: float64
+- **Sample Data (Head)**:
+```plaintext
+| Country name  | year | Life Ladder | Log GDP per capita | Social support | Healthy life expectancy at birth | Freedom to make life choices | Generosity | Perceptions of corruption | Positive affect | Negative affect |
+|---------------|------|-------------|---------------------|-----------------|-------------------------------|-----------------------------|-------------|--------------------------|-----------------|-------------------|
+| Afghanistan   | 2008 | 3.724       | 7.35                | 0.451           | 50.5                          | 0.718                       | 0.164       | 0.882                    | 0.414           | 0.258             |
+| Afghanistan   | 2009 | 4.402       | 7.509               | 0.552           | 50.8                          | 0.679                       | 0.187       | 0.85                     | 0.481           | 0.237             |
+| Afghanistan   | 2010 | 4.758       | 7.614               | 0.539           | 51.1                          | 0.6                         | 0.118       | 0.707                    | 0.517           | 0.275             |
+| Afghanistan   | 2011 | 3.832       | 7.581               | 0.521           | 51.4                          | 0.496                       | 0.16        | 0.731                    | 0.48            | 0.267             |
+| Afghanistan   | 2012 | 3.783       | 7.661               | 0.521           | 51.7                          | 0.531                       | 0.234       | 0.776                    | 0.614           | 0.268             |
+```
 
-| Column Name                             | Data Type |
-|-----------------------------------------|-----------|
-| Country name                            | string    |
-| year                                    | integer   |
-| Life Ladder                             | float     |
-| Log GDP per capita                      | float     |
-| Social support                          | float     |
-| Healthy life expectancy at birth        | float     |
-| Freedom to make life choices            | float     |
-| Generosity                              | float     |
-| Perceptions of corruption               | float     |
-| Positive affect                         | float     |
-| Negative affect                         | float     |
+### Correlation Matrix
+The correlation matrix provides insights into the relationships between different variables. Here are several key findings:
 
-### Description of Attributes
-- **Life Ladder**: A measure of subjective well-being.
-- **Log GDP per capita**: Economic measure indicating the wealth of a country.
-- **Social support**: Reflects the availability of community support.
-- **Healthy life expectancy at birth**: Expected number of years a newborn can expect to live in good health.
-- **Freedom to make life choices**: The extent of individual freedom experienced in society.
-- **Generosity**: Measures of self-reported generosity.
-- **Perceptions of corruption**: Indicates the public’s perception of corruption in society.
-- **Positive affect**: Measure of positive emotions.
-- **Negative affect**: Measure of negative emotions.
+- `Life Ladder` is strongly correlated with `Log GDP per capita` (0.78), suggesting that higher GDP levels are associated with better life satisfaction measures.
+- There is also a high correlation (0.72) between `Social support` and `Life Ladder`, indicating the positive impact of social support on subjective well-being.
 
-## 3. Missing Values
-Missing values are present in several columns, notably:
+### Insights
+#### 1. Dataset Structure
+The dataset contains information on various well-being indicators over multiple years for different countries. It compiles complex interdependencies of social, economic, and emotional factors.
 
-| Attribute                           | Missing Values | Percentage Missing |
-|-------------------------------------|----------------|--------------------|
-| Generosity                          | 81             | 3.4%               |
-| Perceptions of corruption           | 125            | 5.3%               |
-| Log GDP per capita                 | 28             | 1.2%               |
-| Social support                      | 13             | 0.6%               |
-| Healthy life expectancy at birth    | 63             | 2.7%               |
-| Freedom to make life choices        | 36             | 1.5%               |
-| Positive affect                     | 24             | 1%                 |
-| Negative affect                     | 16             | 0.7%               |
+#### 2. Missing Values
+Certain critical indicators, including `Generosity` and `Perceptions of corruption`, have a significant number of missing values. Addressing these gaps will be essential for accurate analysis.
 
-This missing data could impact the analysis and might need to be addressed through imputation or exclusion, depending on the analysis method.
+#### 3. Data Types
+The diversity of data types indicates a mixture of categorical (e.g., country names), temporal (years), and numerical information pertinent to well-being metrics.
 
-## 4. Correlation Analysis
-The correlation matrix provides insights into how different attributes relate to one another, with values ranging from -1 (perfect negative correlation) to 1 (perfect positive correlation).
+#### 4. Correlation Analysis
+Key observations regarding variable relationships were made, particularly regarding the strong positive correlations of well-being indicators with economic metrics. 
 
-### Strongest Correlations
-- **Life Ladder** shows a strong positive correlation with:
-  - **Log GDP per capita**: 0.78
-  - **Social support**: 0.72
-  - **Healthy life expectancy**: 0.71
+#### 5. Potential Data Issues
+The substantial presence of missing values could limit analysis, and the weak correlation of `Generosity` raises questions about its role in measuring overall well-being in this context.
 
-These strong correlations suggest that countries with higher GDP per capita, better health, and social support tend to report higher well-being.
+### Conclusion
+This dataset serves as a valuable resource for examining how economic, social, and emotional factors converge to influence perceived well-being across nations. Future investigations might include:
+- Addressing the missing values.
+- Exploring visualizations to depict trends and relationships.
+- Applying predictive modeling techniques to estimate life satisfaction based on economic and social predictors.
 
-### Corruption Insights
-- **Negative correlation** with well-being indicators such as:
-  - **Life Ladder**: -0.43
-  - **Positive affect**: -0.27
-  - **Freedom to make life choices**: -0.47
+## Visual Representations
+Below are charts that illustrate various aspects of the dataset.
 
-This indicates that higher perceived corruption is linked to lower life satisfaction and happiness.
+![Correlation Matrix](correlation_matrix_resized.png)
+![Year Distribution](year_distribution_resized.png)
+![Life Ladder Distribution](Life_Ladder_distribution_resized.png)
+![Log GDP per Capita Distribution](Log_GDP_per_capita_distribution_resized.png)
+![Country Name Bar Chart](Country_name_bar_chart_resized.png) 
 
-### Negative Affect
-- Has a substantial correlation with:
-  - **Negative correlation with Life Ladder**: -0.35, suggesting that as negative emotions increase, life satisfaction decreases.
+These visualizations can help convey the distribution and relationships within the dataset more clearly. 
 
-## 5. Implications
-The data could be used to infer how socioeconomic factors (like GDP and social support) and individual perceptions (like freedom and corruption) interplay to affect overall happiness and well-being. An emphasis on improving GDP per capita and social support systems may enhance life satisfaction, while addressing corruption perceptions could also contribute positively.
+--- 
 
-## 6. Next Steps for Analysis
-1. **Handling Missing Values**: Determine appropriate strategies (e.g., imputation or removal) for the missing data.
-2. **In-depth Analysis**: Utilize regression models to explore the impact of GDP, social support, etc., on the Life Ladder while controlling for confounding factors.
-3. **Visualizations**: Create visual representations (scatter plots, box plots) of relationships and distributions for deeper insights.
-
-## Conclusion
-The dataset serves as a rich resource for studying the factors contributing to well-being across various nations and times, providing a foundation for both exploratory and predictive analyses.
-
----
-
-## Included Visualizations
-![Correlation Matrix](./correlation_matrix_resized.png)
-![Year Distribution](./year_distribution_resized.png)
-![Life Ladder Distribution](./Life_Ladder_distribution_resized.png)
-![Log GDP per Capita Distribution](./Log_GDP_per_capita_distribution_resized.png)
-![Country Name Bar Chart](./Country_name_bar_chart_resized.png)
+This report aims to facilitate further analysis and discussions regarding the relationships captured in the data and depict the importance of various metrics in assessing life satisfaction across global contexts.
