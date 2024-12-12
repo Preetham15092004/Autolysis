@@ -110,23 +110,34 @@ def visualize_categorical_counts(data, column, filename):
 
 # --- ADVANCED ANALYSES ---
 def perform_clustering(data, numeric_cols, output_dir):
-    normalized_data = data[numeric_cols].dropna()
-    if normalized_data.empty:
+    """
+    Perform clustering analysis and save a scatter plot.
+    """
+    # Ensure there are at least two numeric columns for clustering
+    if len(numeric_cols) < 2:
+        print("Clustering requires at least two numeric columns. Skipping clustering analysis.")
         return None
     
+    # Normalize the data
+    normalized_data = data[numeric_cols].dropna()
+    if normalized_data.empty:
+        print("Normalized data is empty. Skipping clustering analysis.")
+        return None
+
+    # Perform K-means clustering
     kmeans = KMeans(n_clusters=3, random_state=42)
     clusters = kmeans.fit_predict(normalized_data)
-    data.loc[:, 'Cluster'] = clusters
+    data['Cluster'] = clusters
 
     # Save clustering visualization
     plt.figure(figsize=(8, 6))
     sns.scatterplot(x=normalized_data.iloc[:, 0], y=normalized_data.iloc[:, 1], hue=clusters, palette="viridis")
     plt.title("Clustering Analysis")
-    plt.xlabel(numeric_cols[0])
-    plt.ylabel(numeric_cols[1])
+    plt.xlabel(normalized_data.columns[0])
+    plt.ylabel(normalized_data.columns[1])
     filename = os.path.join(output_dir, "clustering.png")
     plt.tight_layout()
-    plt.savefig(filename, bbox_inches='tight', dpi=300, metadata={'Title': 'No Text Rendering'})
+    plt.savefig(filename, bbox_inches='tight', dpi=300)
     plt.close()
     return filename
 
