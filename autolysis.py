@@ -1,18 +1,3 @@
-# /// script
-# requires-python = ">=3.11"
-# dependencies = [
-#   "pandas",
-#   "matplotlib",
-#   "seaborn",
-#   "requests",
-#   "pillow",
-#   "scikit-learn",
-#   "networkx",
-#   "geopandas", 
-#   "shapely", 
-# ]
-# ///
-
 import os
 import sys
 import pandas as pd
