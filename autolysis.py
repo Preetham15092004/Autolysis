@@ -1,14 +1,30 @@
+# /// script
+# requires-python = ">=3.11"
+# dependencies = [
+#   "pandas",
+#   "matplotlib",
+#   "seaborn",
+#   "requests",
+#   "pillow",
+#   "scikit-learn",
+#   "networkx",
+#   "geopandas", 
+#   "shapely", 
+# ]
+# ///
 import os
 import sys
 import pandas as pd
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import requests
 from PIL import Image
 from sklearn.cluster import KMeans
 from sklearn.ensemble import IsolationForest
-import networkx as nx
-from sklearn.preprocessing import MinMaxScaler
+
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
 
 # Validate command-line arguments
 if len(sys.argv) != 2:
@@ -187,39 +203,6 @@ def time_series_analysis(data, date_col, numeric_col, output_dir):
         print(f"Columns {date_col} and/or {numeric_col} not found in the dataset. Skipping time series analysis.")
         return None
 
-def network_analysis(data, col1, col2, output_dir):
-    if col1 in data.columns and col2 in data.columns:
-        edges = data[[col1, col2]].dropna().values
-        if len(edges) == 0:
-            print(f"No valid edges found for {col1} and {col2}. Skipping network analysis.")
-            return None
-
-        graph = nx.Graph()
-        graph.add_edges_from(edges)
-
-        pos = nx.spring_layout(graph, k=0.5)
-
-        plt.figure(figsize=(12, 12))
-        nx.draw(
-            graph,
-            pos,
-            with_labels=True,
-            node_size=300,
-            font_size=10,
-            font_color="darkblue",
-            node_color="skyblue",
-            edge_color="gray",
-            linewidths=0.5,
-            alpha=0.8,
-        )
-
-        filename = os.path.join(output_dir, "network_analysis.png")
-        plt.savefig(filename, bbox_inches="tight", dpi=300)
-        plt.close()
-        return filename
-    else:
-        print(f"Columns {col1} and/or {col2} not found in the dataset. Skipping network analysis.")
-        return None
 
 def create_visualizations(data, data_summary, output_dir):
     """Generate visualizations and save them in the output directory."""
@@ -265,12 +248,7 @@ def create_visualizations(data, data_summary, output_dir):
             if ts_chart:
                 charts.append(ts_chart)
 
-    # Network Analysis
-    if len(categorical_cols) >= 2:
-        network_chart = network_analysis(data, categorical_cols[0], categorical_cols[1], output_dir)
-        if network_chart:
-            charts.append(network_chart)
-   
+    
     return charts
 
 
@@ -343,16 +321,7 @@ def generate_story(data_summary, insights, resized_charts, output_dir, token):
         Time series analysis uncovers trends and patterns over time, providing a temporal perspective on the dataset.
         """
     
-    if any("network_analysis" in chart for chart in resized_charts):
-        insights += """
-        Network analysis visualizes relationships and connections between entities, offering insights into structural dependencies within the data.
-        """
     
-    if any("geographic_analysis" in chart for chart in resized_charts):
-        insights += """
-        Geographic analysis provides a spatial perspective by mapping data across regions or boundaries, uncovering geographic trends and disparities.
-        """
-
     prompt = f"""
     Write a Markdown report:
     - Data Summary: {data_summary}
